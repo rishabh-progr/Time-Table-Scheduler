@@ -2,8 +2,11 @@
 
 {% block body %}
     <h1>Time Tables</h1>
-    <a href="{% url 'firstYear' %}">1st Semester / 2nd Semester</a> <br>
-    <a href="{% url 'secondYear' %}">3rd Semester / 4th Semester</a> <br>
-    <a href="{% url 'thirdYear' %}">5th Semester / 6th Semester</a> <br>
-    <a href="{% url 'forthYear' %}">7th Semester / 8th Semester</a> <br>
+    <ul>
+        {% for section in sections %}
+            <li>{{ section }}</li>
+        {% empty %}
+            <li>No section</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

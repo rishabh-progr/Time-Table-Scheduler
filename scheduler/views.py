@@ -1,8 +1,11 @@
 from django.shortcuts import render
+from .models import Section
 
 # Create your views here.
 def index(request):
-    return render(request, "scheduler/index.html")
+    return render(request, "scheduler/index.html", {
+        "sections": Section.objects.all(),
+    })
 
 def firstYear(request):
     return render(request, "scheduler/firstYear/firstYear.html")
