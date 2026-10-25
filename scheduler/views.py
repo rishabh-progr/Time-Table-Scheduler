@@ -3,18 +3,15 @@ from .models import Section
 
 # Create your views here.
 def index(request):
+    sections = Section.objects.all().order_by("semester", "name")
+
     return render(request, "scheduler/index.html", {
-        "sections": Section.objects.all(),
+        "sections": sections
     })
 
-def firstYear(request):
-    return render(request, "scheduler/firstYear/firstYear.html")
+def section_detail(request, section_id):
+    section = get_object_or_404(Section, id=section_id)
 
-def secondYear(request):
-    return render(request, "scheduler/secondYear/secondYear.html")
-
-def thirdYear(request):
-    return render(request, "scheduler/thirdYear/thirdYear.html")
-
-def forthYear(request):
-    return render(request, "scheduler/forthYear/forthYear.html")
+    return render(request, "scheduler/section_detail.hml", {
+        "section": section
+    })

@@ -1,0 +1,15 @@
+{% extends "scheduler/layout.html" %}
+
+{% block body %}
+    <h1>Time Table: {{ section }}</h1>
+
+    <h2>Subjects</h2>
+
+    <ul>
+        {% for subject in section.subjects.all %}
+            <li>{{ subject.name }}</li>
+        {% empty %}
+            <li>No subject assigned yet.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
