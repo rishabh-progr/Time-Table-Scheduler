@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Section, Department, Faculty, Subject
+from .models import Section, Department, Faculty, Subject, Classroom, TimetableEntry
 
 # Register your models here.
 @admin.register(Section)
@@ -12,3 +12,5 @@ class FacultyAdmin(admin.ModelAdmin):
 
 admin.site.register(Subject)
 admin.site.register(Department)
+admin.site.register(Classroom)
+admin.site.register(TimetableEntry)

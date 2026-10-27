@@ -1,15 +1,37 @@
 {% extends "scheduler/layout.html" %}
 
 {% block body %}
-    <h1>Time Table: {{ section }}</h1>
 
-    <h2>Subjects</h2>
+<h1>Timetable: {{ section }}</h1>
 
-    <ul>
-        {% for subject in section.subjects.all %}
-            <li>{{ subject.name }}</li>
+<table>
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Period</th>
+            <th>Subject</th>
+            <th>Faculty</th>
+            <th>Classroom</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for entry in entries %}
+            <tr>
+                <td>{{ entry.get_day_display }}</td>
+                <td>{{ entry.get_period_display }}</td>
+                <td>{{ entry.subject.name }}</td>
+                <td>{{ entry.faculty.first }} {{ entry.faculty.last }}</td>
+                <td>{{ entry.classroom.name }}</td>
+            </tr>
         {% empty %}
-            <li>No subject assigned yet.</li>
+            <tr>
+                <td colspan="5">
+                    No timetable entries have been created for this section yet.
+                </td>
+            </tr>
         {% endfor %}
-    </ul>
+    </tbody>
+</table>
+
 {% endblock %}
