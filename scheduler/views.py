@@ -12,19 +12,37 @@ def index(request):
 
 def section_detail(request, section_id):
     section = get_object_or_404(Section, id=section_id)
-    entries = TimetableEntry.objects.filter(section=section).annotate(
-        day_order=Case(
-            When(day="MON", then=Value(1)),
-            When(day="TUE", then=Value(2)),
-            When(day="WED", then=Value(3)),
-            When(day="THU", then=Value(4)),
-            When(day="FRI", then=Value(5)),
-            When(day="SAT", then=Value(6)),
-            output_field=IntegerField(),
-        )
-    ).select_related("subject", "faculty", "classroom").order_by("day", "period")
+    entries = TimetableEntry.objects.filter(
+        section=section
+    ).select_related("subject", "faculty", "classroom")
+
+    days = TimetableEntry.DAY_CHOICES
+    periods = TimetableEntry.PERIOD_CHOICES
+
+    entry_lookup = {
+        (entry.day, entry.period): entry
+        for entry in entries
+    }
+
+    timetable = []
+
+    for period_number, period_label in periods:
+        row = {
+            "period_label": period_label,
+            "cells": []
+        }
+
+        for day_code, day_label in days:
+            entry = entry_lookup.get((day_code, period_number))
+
+            row["cells"].append({
+                "entry": entry
+            })
+
+        timetable.append(row)
 
     return render(request, "scheduler/section_detail.html", {
         "section": section,
-        "entries": entries
+        "days": days,
+        "timetable": timetable,
     })

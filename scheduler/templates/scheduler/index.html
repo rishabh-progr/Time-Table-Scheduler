@@ -5,7 +5,7 @@
     <ul>
         {% for section in sections %}
             <li>
-                <a href="{% url 'section_detail' section.id %}">{{ section }}</a>                
+                <a style="color: blue;" href="{% url 'section_detail' section.id %}">{{ section }}</a>                
             </li>
         {% empty %}
             <li>No section available.</li>

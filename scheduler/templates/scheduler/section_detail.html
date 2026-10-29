@@ -2,36 +2,139 @@
 
 {% block body %}
 
-<h1>Timetable: {{ section }}</h1>
+<style>
+    .timetable-container {
+        width: 100%;
+        overflow-x: auto;
+        margin-top: 25px;
+    }
 
-<table>
-    <thead>
-        <tr>
-            <th>Day</th>
-            <th>Period</th>
-            <th>Subject</th>
-            <th>Faculty</th>
-            <th>Classroom</th>
-        </tr>
-    </thead>
+    .timetable {
+        width: 100%;
+        min-width: 900px;
+        border-collapse: collapse;
+        text-align: center;
+    }
 
-    <tbody>
-        {% for entry in entries %}
+    .timetable th,
+    .timetable td {
+        border: 1px solid #ddd;
+        padding: 12px;
+    }
+
+    .timetable thead th {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .timetable tbody th {
+        background-color: #f2f2f2;
+        white-space: nowrap;
+    }
+
+    .timetable td {
+        min-width: 125px;
+        height: 100px;
+        vertical-align: middle;
+    }
+
+    .lecture {
+        padding: 10px;
+        border-radius: 6px;
+        background-color: #e8f2ff;
+    }
+
+    .lecture strong {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .lecture p {
+        margin: 4px 0;
+        font-size: 14px;
+    }
+
+    .empty-slot {
+        color: #999;
+        font-size: 20px;
+    }
+
+    .page-title {
+        margin-bottom: 8px;
+    }
+</style>
+
+<h1 class="page-title">Timetable</h1>
+
+<h3>{{ section }}</h3>
+
+<div class="timetable-container">
+    <table class="timetable">
+
+        <thead>
             <tr>
-                <td>{{ entry.get_day_display }}</td>
-                <td>{{ entry.get_period_display }}</td>
-                <td>{{ entry.subject.name }}</td>
-                <td>{{ entry.faculty.first }} {{ entry.faculty.last }}</td>
-                <td>{{ entry.classroom.name }}</td>
+                <th>Period</th>
+
+                {% for day_code, day_label in days %}
+                    <th>{{ day_label }}</th>
+                {% endfor %}
+
             </tr>
-        {% empty %}
-            <tr>
-                <td colspan="5">
-                    No timetable entries have been created for this section yet.
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+
+        <tbody>
+
+            {% for row in timetable %}
+
+                <tr>
+                    <th>{{ row.period_label }}</th>
+
+                    {% for cell in row.cells %}
+
+                        <td>
+                            {% if cell.entry %}
+
+                                <div class="lecture">
+
+                                    <strong>
+                                        {{ cell.entry.subject.name }}
+                                    </strong>
+
+                                    <p>
+                                        {{ cell.entry.faculty.first }}
+                                        {{ cell.entry.faculty.last }}
+                                    </p>
+
+                                    <p>
+                                        {{ cell.entry.classroom.name }}
+                                    </p>
+
+                                </div>
+
+                            {% else %}
+
+                                <span class="empty-slot">—</span>
+
+                            {% endif %}
+                        </td>
+
+                    {% endfor %}
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+                    <td colspan="7">
+                        No timetable periods configured.
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+</div>
 
 {% endblock %}
