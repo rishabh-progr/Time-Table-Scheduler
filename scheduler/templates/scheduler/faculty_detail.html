@@ -1,0 +1,117 @@
+{% extends "scheduler/layout.html" %}
+
+{% block body %}
+
+<h1>Faculty: {{ faculty.first }} {{ faculty.last }}</h1>
+
+<h3>{{ faculty.department }}</h3>
+
+<style>
+    .timetable-container {
+        width: 100%;
+        overflow-x: auto;
+        margin-top: 25px;
+    }
+
+    .timetable {
+        width: 100%;
+        min-width: 900px;
+        border-collapse: collapse;
+        text-align: center;
+    }
+
+    .timetable th,
+    .timetable td {
+        border: 1px solid #ddd;
+        padding: 12px;
+    }
+
+    .timetable thead th {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .timetable tbody th {
+        background-color: #f2f2f2;
+        white-space: nowrap;
+    }
+
+    .timetable td {
+        min-width: 125px;
+        height: 100px;
+        vertical-align: middle;
+    }
+
+    .lecture {
+        padding: 10px;
+        border-radius: 6px;
+        background-color: #e8f2ff;
+    }
+
+    .lecture strong {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .lecture p {
+        margin: 4px 0;
+        font-size: 14px;
+    }
+
+    .empty-slot {
+        color: #999;
+        font-size: 20px;
+    }
+</style>
+
+<div class="timetable-container">
+    <table class="timetable">
+        <thead>
+            <tr>
+                <th>Period</th>
+
+                {% for day_code, day_label in days %}
+                    <th>{{ day_label }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for row in timetable %}
+                <tr>
+                    <th>{{ row.period_label }}</th>
+
+                    {% for cell in row.cells %}
+                        <td>
+                            {% if cell.entry %}
+                                <div class="lecture">
+                                    <strong>
+                                        Section: {{ cell.entry.section }}
+                                    </strong>
+
+                                    <p>
+                                        {{ cell.entry.subject.name  }}
+                                    </p>
+
+                                    <p>
+                                        Room: {{ cell.entry.classroom.name }}
+                                    </p>
+                                </div>
+                            {% else %}
+                                <span class="empty-slot">—</span>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7">
+                        No timetable periods configured.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends "scheduler/layout.html" %}
 
 {% block body %}
-    <h1>Time Tables</h1>
+    <h1>Section Details</h1>
     <ul>
         {% for section in sections %}
             <li>
@@ -10,5 +10,18 @@
         {% empty %}
             <li>No section available.</li>
         {% endfor %}
-    </ul>
+    </ul> <br>
+
+    <h1>Faculty Details</h1>
+    
+    <ul>
+        {% for faculty in faculty_members %}
+            <li>
+                <a style="color: blue;" href="{% url 'faculty_detail' faculty.id %}">{{ faculty }}</a>                
+            </li>
+        {% empty %}
+            <li>No details available.</li>
+        {% endfor %}
+    </ul> <br>
+
 {% endblock %}

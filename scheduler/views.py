@@ -1,13 +1,15 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Case, When, Value, IntegerField
-from .models import Section, TimetableEntry
+from .models import Section, Faculty, TimetableEntry
 
 # Create your views here.
 def index(request):
     sections = Section.objects.all().order_by("semester", "name")
+    faculty_members = Faculty.objects.all().order_by("first", "last")
 
     return render(request, "scheduler/index.html", {
-        "sections": sections
+        "sections": sections,
+        "faculty_members": faculty_members,
     })
 
 def section_detail(request, section_id):
@@ -43,6 +45,41 @@ def section_detail(request, section_id):
 
     return render(request, "scheduler/section_detail.html", {
         "section": section,
+        "days": days,
+        "timetable": timetable,
+    })
+
+def faculty_detail(request, faculty_id):
+    faculty = get_object_or_404(Faculty, id=faculty_id)
+
+    entries = TimetableEntry.objects.filter(
+        faculty=faculty
+    ).select_related("subject", "section", "classroom")
+
+    days = TimetableEntry.DAY_CHOICES
+    periods = TimetableEntry.PERIOD_CHOICES
+
+    entry_lookup = {
+        (entry.day, entry.period): entry
+        for entry in entries
+    }
+
+    timetable = []
+
+    for period_number, period_label in periods:
+        row = {
+            "period_label": period_label,
+            "cells": []
+        }
+
+        for day_code, day_label in days:
+            entry = entry_lookup.get((day_code, period_number))
+            row["cells"].append({"entry": entry})
+
+        timetable.append(row)
+
+    return render(request, "scheduler/faculty_detail.html", {
+        "faculty": faculty,
         "days": days,
         "timetable": timetable,
     })
